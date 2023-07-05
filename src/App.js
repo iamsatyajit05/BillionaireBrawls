@@ -1,11 +1,23 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter as solidTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faWhatsapp as solidWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import useSound from 'use-sound';
-import muskImg from './assets/musk.png';
-import zuckImg from './assets/zuck.png';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import muskImg from './assets/img/musk.png';
+import zuckImg from './assets/img/zuck.png';
+import musk from './assets//img/1.png';
+import zuck from './assets//img/2.png';
+import muskBang from './assets/img/3.png';
+import zuckBang from './assets/img/4.png';
+import muskBoom from './assets/img/5.png';
+import zuckBoom from './assets/img/6.png';
+import mouseClick from './assets/sound/click.wav';
+import startSound from './assets/sound/start.wav';
+import perfectHit from './assets/sound/hit1.wav';
+import averageHit from './assets/sound/hit2.wav';
+import worstHit from './assets/sound/hit3.wav';
 
 const meterOption = Object.freeze({
 	1: 'worst1',
@@ -16,6 +28,7 @@ const meterOption = Object.freeze({
 })
 
 const teamMotoOption = Object.freeze({
+	'none': "Choose Your Team",
 	'musk': "Team Rocket",
 	'zuck': "Team Privacy"
 })
@@ -59,19 +72,6 @@ const Meter = ({ position }) => {
 	);
 };
 
-const Button = ({ onClick, isDisable }) => {
-	return (
-		<div className={`flex flex-col justify-center items-center button w-20 h-10 bg-gray-800 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_#000]
-		active:translate-y-2  active:[box-shadow:0_0px_0_0_#000]
-		transition-all duration-150
-		border-red-400 ml-3 mb-2`}
-			onClick={onClick}
-		>
-			<span className='block text-white font-bold text-lg'>{isDisable ? "WAIT" : "HIT"}</span>
-		</div>
-	);
-};
-
 const Game = () => {
 	const [isGameStart, setIsGameStart] = useState(false);
 	const [isGameOver, setIsGameOver] = useState(false);
@@ -79,7 +79,8 @@ const Game = () => {
 	const [showGame, setShowGame] = useState(false);
 	const [showGameCounter, setShowGameCounter] = useState("GET");
 	const [team, setTeam] = useState("musk");
-	const [teamMoto, setTeamMoto] = useState(teamMotoOption["musk"]);
+	const [teamMoto, setTeamMoto] = useState(teamMotoOption['none']);
+	const [teamCSS, setTeamCSS] = useState("bg-gray-800 [box-shadow:0_8px_0_0_rgb(0,0,0)]");
 	const [score, setScore] = useState(0);
 	const [meterPosition, setMeterPosition] = useState(0);
 	const [isMeterMoving, setIsMeterMoving] = useState(false);
@@ -87,32 +88,57 @@ const Game = () => {
 	const [timer, setTimer] = useState(119);
 	const [showTimer, setShowTimer] = useState("2 : 00");
 	const [heart, setHeart] = useState(3);
+	const [mainCharcter, setMainCharcter] = useState();
 
 	const handleHitClick = () => {
 		setIsDisableBtn(true);
 		calculateScore();
-		playAnimationAndSound();
 		setTimeout(() => {
 			setIsDisableBtn(false);
-		}, 1000);
+		}, 500);
 	};
 
 	const handleSetMusk = () => {
+		new Audio(mouseClick).play();
 		setTeam("musk");
 		setTeamMoto(teamMotoOption["musk"]);
+		setMainCharcter(zuck);
+		setTeamCSS("bg-red-500 [box-shadow:0_8px_0_0_rgb(185,28,28)]");
 	}
 
 	const handleSetZuck = () => {
+		new Audio(mouseClick).play();
 		setTeam("zuck");
 		setTeamMoto(teamMotoOption["zuck"]);
+		setMainCharcter(musk);
+		setTeamCSS("bg-blue-500 [box-shadow:0_8px_0_0_rgb(29,78,216)]");
 	}
 
 	const handleStartClick = () => {
-		setShowWaitingTime(true);
-		setShowGame(true);
-		setTimeout(() => {
-			set();
-		}, 1000);
+		new Audio(mouseClick).play();
+		if (teamMoto === teamMotoOption['none']) {
+			toast.error('Please choose one team!', {
+				position: "top-right",
+				autoClose: 2000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "dark",
+			});
+		} else {
+			new Audio(startSound).play();
+			setShowWaitingTime(true);
+			setShowGame(true);
+			setTimeout(() => {
+				set();
+			}, 1000);
+		}
+	}
+
+	const nothing = () => {
+		console.log("Go Slow Baby!!!");
 	}
 
 	const set = () => {
@@ -138,6 +164,7 @@ const Game = () => {
 	}
 
 	const handleRestartClick = () => {
+		new Audio(mouseClick).play();
 		setIsGameStart(false);
 		setIsGameOver(false);
 		setScore(0);
@@ -151,11 +178,13 @@ const Game = () => {
 	}
 
 	const handleShareWhatsapp = () => {
+		new Audio(mouseClick).play();
 		window.open(`https://web.whatsapp.com/send?text=🐦👨🏻‍🚀🚀:${score}%0A%0ACheck out http://localhost:3000/ now!%0A%0AThis game is hilarious, and shows your support for Musk or Zuck!!`, "_blank");
 	}
 
 	const handleShareTwitter = () => {
-		window.open(`https://twitter.com/intent/tweet?url=🐦👨🏻‍🚀🚀:${score}%0A%0Ahttps%3A%2F%2Flocalhost:3000%20%7C%20%40FlappyMusk`, "_blank");
+		new Audio(mouseClick).play();
+		window.open(`https://twitter.com/intent/tweet?url=🐦👨🏻‍🚀🚀:${score}%0A%0Ahttps%3A%2F%2Flocalhost:3000`, "_blank");
 	}
 
 	const handleMeterMovement = useCallback(() => {
@@ -187,7 +216,7 @@ const Game = () => {
 				if (heart <= 0 || timer <= 0) {
 					handleTimerEnd(0);
 				} else {
-					console.log(timer);
+					console.log(`Time: ${timer}`);
 					setTimer(timer - 1)
 					handleTimerEnd(timer - 1);
 					var minutes = Math.floor(timer / 60);
@@ -208,27 +237,49 @@ const Game = () => {
 		};
 	}, [timer, handleMeterMovement, heart, isGameStart]);
 
-	const [playbackRate, setPlaybackRate] = React.useState(0.75);
-
-	const [play] = useSound('./assets/succss-1-6297.mp3', {
-		playbackRate,
-		volume: 0.5,
-	});
-
-
 	const calculateScore = () => {
 		let hitQuality;
-
 		if (meterPosition === "perfect") {
 			hitQuality = 'perfect';
-			setPlaybackRate(playbackRate + 0.1);
-			play();
+
+			new Audio(perfectHit).play();
+
+			if (team === "musk") {
+				setMainCharcter(zuckBoom);
+			} else {
+				setMainCharcter(muskBoom)
+			}
+			setTimeout(() => {
+				if (team === "musk") {
+					setMainCharcter(zuck);
+				} else {
+					setMainCharcter(musk)
+				}
+			}, 500)
+
 			setScore((prevScore) => prevScore + 100);
 		} else if (meterPosition === 'average1' || meterPosition === 'average2') {
 			hitQuality = 'average';
+
+			new Audio(averageHit).play();
+
+			if (team === "musk") {
+				setMainCharcter(zuckBang);
+			} else {
+				setMainCharcter(muskBang)
+			}
+			setTimeout(() => {
+				if (team === "musk") {
+					setMainCharcter(zuck);
+				} else {
+					setMainCharcter(musk)
+				}
+			}, 500)
+
 			setScore((prevScore) => prevScore + 50);
 		} else {
 			hitQuality = 'worst';
+			new Audio(worstHit).play();
 			setScore((prevScore) => prevScore);
 			setTimer((prevTimer) => prevTimer - 10);
 			setHeart(heart - 1);
@@ -237,20 +288,17 @@ const Game = () => {
 		console.log(`Hit Quality: ${hitQuality}`);
 	};
 
-	const playAnimationAndSound = () => {
-		// Play the animation and sound effect for the hit
-		// Implement your animation and sound effect logic here
-	};
-
 	return (
 		<>
 			<h1 className="text-center text-white text-3xl font-bold my-5">Billionaire Brawls</h1>
-			<div id='mainbg' className="from-[#243748] bg-gradient-to-br to-[#4b749f] mx-auto w-[400px] h-[560px] rounded-3xl relative">
+			<div id='mainbg' className="from-[#243748] bg-gradient-to-t to-[#4b749f] mx-auto w-[400px] h-[560px] rounded-3xl relative">
 				<div className={` rounded-3xl h-full flex flex-col justify-center items-center ${isGameStart || showWaitingTime ? "hidden" : ""}`}>
-					<h2 className={`w-[332px] py-3 mb-6 text-white text-lg font-bold rounded-xl text-center items-center ${team === "musk" ? "bg-red-500 [box-shadow:0_8px_0_0_rgb(220,38,38)]" : "bg-blue-500 [box-shadow:0_8px_0_0_rgb(29,78,216)]"}`}>Ahhhh, {teamMoto}. Good Choice</h2>
+					<h2 className={`w-[332px] py-3 mb-6 text-white text-lg font-bold rounded-xl text-center items-center 
+					${teamCSS}`
+					}>{teamMoto}</h2>
 					<div className='flex justify-center'>
-						<div className={`flex flex-col justify-center items-center button w-40 h-40 bg-red-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(220,38,38)]
-    active:translate-y-2 active:[box-shadow:0_0px_0_0_rgb(220,38,38)]
+						<div className={`flex flex-col justify-center items-center button w-40 h-40 bg-red-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(185,28,28)]
+    active:translate-y-2 active:[box-shadow:0_0px_0_0_rgb(185,28,28)]
     transition-all duration-150
     border-red-400 mr-3 mb-2 
   `}
@@ -308,13 +356,21 @@ const Game = () => {
 							</div>
 						</div>
 
-						<div className="flex justify-center items-center h-1/2">
+						<div className="flex justify-center items-center absolute bottom-0 left-0 right-0">
+							<img src={mainCharcter} alt="" width={250} />
 						</div>
 
 						<div className="flex justify-center absolute left-0 right-0 bottom-4">
 							<div className='w-full flex justify-center'>
 								<Meter position={meterPosition} />
-								<Button onClick={handleHitClick} isDisable={isDisableBtn} />
+								<div className={`flex flex-col justify-center items-center button w-20 h-10 bg-gray-800 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_#000]
+		active:translate-y-2  active:[box-shadow:0_0px_0_0_#000]
+		transition-all duration-500
+		border-red-400 ml-3 mb-2`}
+									onClick={isDisableBtn ? nothing : handleHitClick}
+								>
+									<span className='block text-white font-bold text-lg'>HIT</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -364,6 +420,7 @@ const Game = () => {
 					</div>
 				</div>
 			</div>
+			<ToastContainer />
 		</>
 	);
 };
