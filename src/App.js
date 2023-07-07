@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter as solidTwitter } from '@fortawesome/free-brands-svg-icons';
@@ -89,10 +89,16 @@ const Game = () => {
 	const [showTimer, setShowTimer] = useState("2 : 00");
 	const [heart, setHeart] = useState(3);
 	const [mainCharcter, setMainCharcter] = useState();
+	const [muskScore, setMuskScore] = useState();
+	const [zuckScore, setZuckScore] = useState();
 
 	const handleHitClick = () => {
 		setIsDisableBtn(true);
-		calculateScore();
+		if (heart <= 0) {
+			return;
+		} else {
+			calculateScore();
+		}
 		setTimeout(() => {
 			setIsDisableBtn(false);
 		}, 500);
@@ -197,13 +203,34 @@ const Game = () => {
 		}
 	}, [isMeterMoving]);
 
+	const getLatestScore = async () => {
+		const response = await fetch('https://billionaire-brawl-api.vercel.app/api/fetchscore');
+		const data = await response.json();
+		console.log(data.score);
+		setMuskScore(data.score.musk);
+		setZuckScore(data.score.zuck);
+	}
+
 	useEffect(() => {
-		const handleTimerEnd = (remainingSeconds) => {
+		getLatestScore();
+	}, []);
+
+	useEffect(() => {
+		const handleTimerEnd = async (remainingSeconds) => {
 			if (remainingSeconds === 0) {
 				setIsGameOver(true);
 				setShowGame(false);
 				clearInterval(timerInterval);
 				clearInterval(meterUpdate);
+				const response = await fetch('https://billionaire-brawl-api.vercel.app/api/savescore', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ team: team, score: score }),
+				});
+				// const data = await response.json();
+				// console.log(data);
 			}
 		}
 
@@ -235,7 +262,7 @@ const Game = () => {
 			clearInterval(timerInterval);
 			clearInterval(meterUpdate);
 		};
-	}, [timer, handleMeterMovement, heart, isGameStart]);
+	}, [timer, handleMeterMovement, heart, isGameStart, team, score]);
 
 	const calculateScore = () => {
 		let hitQuality;
@@ -418,6 +445,18 @@ const Game = () => {
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div className="w-[400px] flex m-auto text-white mt-5">
+				<div className={`flex flex-col justify-center items-center button w-1/2 bg-red-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(185,28,28)] py-3 mr-1 mb-2`}
+				>
+					<span className='block text-white font-bold text-lg'>MUSK</span>
+					<span className='block text-white font-bold text-2xl'>{muskScore}</span>
+				</div>
+				<div className={`flex flex-col justify-center items-center button w-1/2 bg-blue-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(29,78,216)] py-3 ml-1 mb-2`}
+				>
+					<span className='block text-white font-bold text-lg'>ZUCK</span>
+					<span className='block text-white font-bold text-2xl'>{zuckScore}</span>
 				</div>
 			</div>
 			<ToastContainer />
