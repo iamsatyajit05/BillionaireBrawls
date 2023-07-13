@@ -208,12 +208,12 @@ export default function Game({ team, setTeamFunc }) {
 
 	const handleShareWhatsapp = () => {
 		audioRefMouseClick.current.play();
-		window.open(`https://web.whatsapp.com/send?text=🐦👨🏻‍🚀🚀:${score}%0A%0ACheck out http://localhost:3000/ now!%0A%0AThis game is hilarious, and shows your support for Musk or Zuck!!`, "_blank");
+		window.open(`https://web.whatsapp.com/send?text=🐦👨🏻‍🚀🚀:${score}%0A%0ACheck out https://billionairebrawls.xyz now!%0A%0AThis game is hilarious, and shows your support for Alien Musk or Lizard Zuck!!`, "_blank");
 	}
 
 	const handleShareTwitter = () => {
 		audioRefMouseClick.current.play();
-		window.open(`https://twitter.com/intent/tweet?url=🐦👨🏻‍🚀🚀:${score}%0A%0Ahttps%3A%2F%2Flocalhost:3000`, "_blank");
+		window.open(`https://twitter.com/intent/tweet?url=🐦👨🏻‍🚀🚀:${score}%0A%0Ahttps%3A%2F%2Fbillionairebrawls.xyz`, "_blank");
 	}
 
 	const handleMeterMovement = useCallback(() => {
@@ -230,7 +230,6 @@ export default function Game({ team, setTeamFunc }) {
 		try {
 			const response = await fetch('https://billionaire-brawl-api.vercel.app/api/fetchscore');
 			const data = await response.json();
-			console.log(data.score);
 			setMuskScore(data.score.musk);
 			setZuckScore(data.score.zuck);
 		} catch (err) {
@@ -492,13 +491,13 @@ export default function Game({ team, setTeamFunc }) {
 					</div>
 				</div>
 			</div>
-			<div className="w-[400px] flex m-auto text-white my-8">
-				<div className={`flex flex-col justify-center items-center button w-1/2 bg-red-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(185,28,28)] py-3 mr-1 mb-2`}
+			<div className="max-w-[400px] flex flex-col sm:flex-row m-auto text-white my-8 gap-4">
+				<div className={`flex flex-col justify-center items-center button w-full sm:w-1/2 bg-red-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(185,28,28)] py-3 mr-1 mb-2`}
 				>
 					<span className='block text-white font-bold text-base'>MUSK</span>
 					<span className='block text-white font-bold text-2xl'>{muskScore}</span>
 				</div>
-				<div className={`flex flex-col justify-center items-center button w-1/2 bg-blue-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(29,78,216)] py-3 ml-1 mb-2`}
+				<div className={`flex flex-col justify-center items-center button w-full sm:w-1/2 bg-blue-500 rounded-xl cursor-pointer select-none [box-shadow:0_8px_0_0_rgb(29,78,216)] py-3 mb-2`}
 				>
 					<span className='block text-white font-bold text-base'>ZUCK</span>
 					<span className='block text-white font-bold text-2xl'>{zuckScore}</span>

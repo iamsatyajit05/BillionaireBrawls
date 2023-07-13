@@ -24,8 +24,22 @@ export default function EmailList({ team, toast }) {
                     body: JSON.stringify({ email: email })
                 }
                 );
+                setEmail('');
+                setEmailError('');
 
                 console.log(response);
+                if(response.status === 200) {
+                    toast.success('We will remeber your support!', {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
             } catch (err) {
                 console.log("Error in saving email:", err);
                 toast.error('Sorry, we are facing some issue!', {
@@ -53,7 +67,7 @@ export default function EmailList({ team, toast }) {
                     <label htmlFor="email" className="sr-only">Email address</label>
                     <div className="flex justify-center items-center flex-col sm:flex-row mb-1 gap-4">
                         <input type="email" id="email" name="email" placeholder="Enter your email address" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white text-black focus:outline-none focus:shadow-outline rounded-full py-3 px-4 w-full sm:1/2 md:w-3/5" />
-                        <button type="submit" className={`${bgColor} active:scale-95 transition-all duration-300 text-white font-semibold rounded-full py-3 px-6 sm:mt-0`}>Join</button>
+                        <button type="submit" className={`${bgColor} active:scale-95 transition-all duration-250 text-white font-semibold rounded-full py-3 px-6 sm:mt-0`}>Join</button>
                     </div>
                     <p className="text-red-500 text-sm text-center mt-3">{emailError}</p>
                 </form>
