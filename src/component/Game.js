@@ -92,6 +92,7 @@ export default function Game({ team, setTeamFunc }) {
 	const [mainCharcter, setMainCharcter] = useState();
 	const [muskScore, setMuskScore] = useState('Lost in bots!');
 	const [zuckScore, setZuckScore] = useState('Lost in data!');
+	
 	const audioRefMouseClick = useRef(null);
 	const audioRefStartSound = useRef(null);
 	const audioRefPerfectHit = useRef(null);
@@ -99,6 +100,7 @@ export default function Game({ team, setTeamFunc }) {
 	const audioRefWorstHit = useRef(null);
 
 	useEffect(() => {
+		console.log(muskBoom);
 		audioRefMouseClick.current = new Audio(mouseClick);
 		audioRefMouseClick.current.preload = "auto";
 
@@ -362,6 +364,12 @@ export default function Game({ team, setTeamFunc }) {
 
 	return (
 		<>
+			<div className="hidden">
+				<img src={zuckBoom} alt="" height={80} width={80} />
+				<img src={muskBoom} alt="" height={80} width={80} />
+				<img src={zuckBang} alt="" height={80} width={80} />
+				<img src={muskBang} alt="" height={80} width={80} />
+			</div>
 			<div id='mainbg' className="from-[#243748] bg-gradient-to-t to-[#4b749f] mx-auto w-[400px] h-[560px] rounded-3xl relative my-8">
 				<div className={` rounded-3xl h-full flex flex-col justify-center items-center ${isGameStart || showWaitingTime ? "hidden" : ""}`}>
 					<h2 className={`w-[332px] py-3 mb-6 text-white text-lg font-bold rounded-xl text-center items-center 
@@ -398,6 +406,7 @@ export default function Game({ team, setTeamFunc }) {
 					>
 						<span className='flex flex-col justify-center items-center h-full text-white font-bold text-lg '>START</span>
 					</div>
+					<p className="absolute bottom-6 text-white text-center text-sm px-1">The game is in intitial stages - It might feel a bit glitchy <br /> We looking for React Dev to help us with glitchies</p>
 				</div>
 
 				<div className={`${!showGame || isGameOver ? "hidden" : ""}`}>
