@@ -13,6 +13,7 @@ import muskBang from '../assets/img/3.png';
 import zuckBang from '../assets/img/4.png';
 import muskBoom from '../assets/img/5.png';
 import zuckBoom from '../assets/img/6.png';
+import backGroundMusic from '../assets/sound/bg.wav';
 import mouseClick from '../assets/sound/click.wav';
 import startSound from '../assets/sound/start.wav';
 import perfectHit from '../assets/sound/hit1.wav';
@@ -93,6 +94,7 @@ export default function Game({ team, setTeamFunc }) {
 	const [muskScore, setMuskScore] = useState('Lost in bots!');
 	const [zuckScore, setZuckScore] = useState('Lost in data!');
 	
+	const audioBackGroundMusic = useRef(null);
 	const audioRefMouseClick = useRef(null);
 	const audioRefStartSound = useRef(null);
 	const audioRefPerfectHit = useRef(null);
@@ -101,6 +103,9 @@ export default function Game({ team, setTeamFunc }) {
 
 	useEffect(() => {
 		console.log(muskBoom);
+		audioBackGroundMusic.current = new Audio(backGroundMusic);
+		audioBackGroundMusic.current.preload = "auto";
+		
 		audioRefMouseClick.current = new Audio(mouseClick);
 		audioRefMouseClick.current.preload = "auto";
 
@@ -191,6 +196,7 @@ export default function Game({ team, setTeamFunc }) {
 			setIsMeterMoving(true);
 			setIsGameStart(true);
 			setShowWaitingTime(false);
+			audioBackGroundMusic.current.play();
 		}, 1000);
 	}
 
@@ -246,6 +252,9 @@ export default function Game({ team, setTeamFunc }) {
 	useEffect(() => {
 		const handleTimerEnd = async (remainingSeconds) => {
 			if (remainingSeconds === 0) {
+				audioBackGroundMusic.current.pause();
+				audioBackGroundMusic.current = new Audio(backGroundMusic);
+				audioBackGroundMusic.current.preload = "auto";
 				setIsGameOver(true);
 				setShowGame(false);
 				clearInterval(timerInterval);
