@@ -102,7 +102,6 @@ export default function Game({ team, setTeamFunc }) {
 	const audioRefWorstHit = useRef(null);
 
 	useEffect(() => {
-		console.log(muskBoom);
 		audioBackGroundMusic.current = new Audio(backGroundMusic);
 		audioBackGroundMusic.current.preload = "auto";
 		
@@ -236,7 +235,7 @@ export default function Game({ team, setTeamFunc }) {
 
 	const getLatestScore = async () => {
 		try {
-			const response = await fetch('https://billionaire-brawl-api.vercel.app/api/fetchscore');
+			const response = await fetch('https://billionairebrawls-backend.vercel.app/api/fetchscore');
 			const data = await response.json();
 			setMuskScore(data.score.musk);
 			setZuckScore(data.score.zuck);
@@ -260,15 +259,13 @@ export default function Game({ team, setTeamFunc }) {
 				clearInterval(timerInterval);
 				clearInterval(meterUpdate);
 				try {
-					const response = await fetch('https://billionaire-brawl-api.vercel.app/api/savescore', {
+					const response = await fetch('https://billionairebrawls-backend.vercel.app/api/savescore', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify({ team: team, score: score }),
 					});
-
-                    console.log(response);
 				} catch (err) {
 					toast.error(`Error! We think ${team} don't want your support`, {
 						position: "top-right",
@@ -281,8 +278,6 @@ export default function Game({ team, setTeamFunc }) {
 						theme: "dark",
 					});
 				}
-				// const data = await response.json();
-				// console.log(data);
 			}
 		}
 
@@ -295,7 +290,6 @@ export default function Game({ team, setTeamFunc }) {
 				if (heart <= 0 || timer <= 0) {
 					handleTimerEnd(0);
 				} else {
-					// console.log(`Time: ${timer}`);
 					setTimer(timer - 1)
 					handleTimerEnd(timer - 1);
 					var minutes = Math.floor(timer / 60);
@@ -328,9 +322,8 @@ export default function Game({ team, setTeamFunc }) {
 			} else {
 				setMainCharcter(muskBoom)
 			}
-			console.log('Before TimeOut');
+			
 			setTimeout(() => {
-				console.log('In TimeOut');
 				if (team === "musk") {
 					setMainCharcter(zuck);
 				} else {
@@ -349,9 +342,8 @@ export default function Game({ team, setTeamFunc }) {
 			} else {
 				setMainCharcter(muskBang)
 			}
-			console.log('Before TimeOut');
+
 			setTimeout(() => {
-				console.log('In TimeOut');
 				if (team === "musk") {
 					setMainCharcter(zuck);
 				} else {

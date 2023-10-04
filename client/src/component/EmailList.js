@@ -6,7 +6,7 @@ export default function EmailList({ team, toast }) {
     const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
 
     let bgColor;
-    if(team === 'musk') {
+    if (team === 'musk') {
         bgColor = 'bg-red-500 hover:bg-red-600';
     } else if (team === 'zuck') {
         bgColor = 'bg-blue-500 hover:bg-blue-600';
@@ -18,7 +18,7 @@ export default function EmailList({ team, toast }) {
         e.preventDefault();
         if (validEmail.test(email)) {
             try {
-                const response = await fetch("https://billionaire-brawl-api.vercel.app/api/saveemail", {
+                const response = await fetch("https://billionairebrawls-backend.vercel.app/api/saveemail", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ email: email })
@@ -28,7 +28,7 @@ export default function EmailList({ team, toast }) {
                 setEmailError('');
 
                 console.log(response);
-                if(response.status === 200) {
+                if (response.status === 200) {
                     toast.success('We will remeber your support!', {
                         position: "top-right",
                         autoClose: 2000,
